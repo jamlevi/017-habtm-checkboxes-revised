@@ -1,0 +1,32 @@
+<%= form_for(@category) do |f| %>
+    <% if @category.errors.any? %>
+        <div class="error_messages">
+          <h2><%= pluralize(@category.errors.count, "error") %> prohibited this category from being saved:</h2>
+
+          <ul>
+            <% @category.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :name %><br/>
+      <%= f.text_field :name %>
+    </div>
+    <div class="field">
+      <%= hidden_field_tag "category[product_ids][]", nil %>
+      <% Product.all.each do |product| %>
+          <%= fields_for @categorization do |cat| %>
+              <%= check_box_tag "category[product_ids][]", product.id, @category.product_ids.include?(product.id), id: dom_id(product) %>
+              <%= label_tag dom_id(product), product.name %>
+              <%= label_tag :price %>
+              <%= text_field cat, :price %><br>
+          <% end %>
+      <% end %>
+    </div>
+    <div class="actions">
+      <%= f.submit %>
+    </div>
+<% end %>
